@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.NativeTabsTriggerBadge = exports.NativeTabsTriggerVectorIcon = exports.NativeTabsTriggerIcon = exports.NativeTabsTriggerLabel = void 0;
+exports.NativeTabsBottomAccessory = exports.NativeTabsTriggerBadge = exports.NativeTabsTriggerVectorIcon = exports.NativeTabsTriggerIcon = exports.NativeTabsTriggerLabel = void 0;
 const primitives_1 = require("../../primitives");
 exports.NativeTabsTriggerLabel = primitives_1.Label;
 /**
@@ -39,4 +39,50 @@ exports.NativeTabsTriggerIcon = primitives_1.Icon;
  */
 exports.NativeTabsTriggerVectorIcon = primitives_1.VectorIcon;
 exports.NativeTabsTriggerBadge = primitives_1.Badge;
+/**
+ * A [bottom accessory](https://developer.apple.com/documentation/uikit/uitabbarcontroller/bottomaccessory) for `NativeTabs` on iOS 26 and above.
+ *
+ * @example
+ * ```tsx
+ * import { NativeTabs } from 'expo-router/unstable-native-tabs';
+ *
+ * export default Layout(){
+ *   return (
+ *     <NativeTabs>
+ *       <NativeTabs.BottomAccessory>
+ *         <YourAccessoryComponent />
+ *       </NativeTabs.BottomAccessory>
+ *       <NativeTabs.Trigger name="index" />
+ *     </NativeTabs>
+ *   );
+ * }
+ * ```
+ *
+ * Optionally you can provide different accessories for `inline` and `regular` states:
+ *
+ * @example
+ * ```tsx
+ * import { NativeTabs } from 'expo-router/unstable-native-tabs';
+ *
+ * export default Layout(){
+ *   return (
+ *     <NativeTabs>
+ *       <NativeTabs.BottomAccessory forState="regular">
+ *         <RegularAccessoryComponent />
+ *       </NativeTabs.BottomAccessory>
+ *       <NativeTabs.BottomAccessory forState="inline">
+ *         <InlineAccessoryComponent />
+ *       </NativeTabs.BottomAccessory>
+ *       <NativeTabs.Trigger name="index" />
+ *     </NativeTabs>
+ *   );
+ * }
+ * ```
+ *
+ * @platform iOS 26+
+ */
+const NativeTabsBottomAccessory = () => {
+    return null;
+};
+exports.NativeTabsBottomAccessory = NativeTabsBottomAccessory;
 //# sourceMappingURL=elements.js.map
