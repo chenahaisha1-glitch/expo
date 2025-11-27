@@ -1,24 +1,231 @@
----
-title: Create a project
-description: Learn how to create a new Expo project.
-hideTOC: true
----
+# Install Node.js first (if you haven't)
+# Then install Expo CLI
+npm install -g expo-cli
 
-import { Terminal } from '~/ui/components/Snippet';
+# Create your first app
+npx create-expo-app TodoApp
+cd TodoApp
 
-System requirements:
+# Start the development server
+npm start
+import React, { useState } from 'react';
+import { 
+  StyleSheet, 
+  View, 
+  Text, 
+  TextInput, 
+  TouchableOpacity, 
+  FlatList,
+  Keyboard,
+  Alert
+} from 'react-native';
 
-- [Node.js (LTS)](https://nodejs.org/en/).
-- macOS, Windows (Powershell and [WSL 2](https://expo.fyi/wsl)), and Linux are supported.
+export default function App() {
+  const [task, setTask] = useState('');
+  const [tasks, setTasks] = useState([]);
 
-We recommend starting with the default project created by `create-expo-app`. The default project includes example code to help you get started.
+  // Add a new task
+  const addTask = () => {
+    if (task.trim() === '') {
+      Alert.alert('Oops!', 'Please enter a task');
+      return;
+    }
+    
+    setTasks([...tasks, { 
+      id: Date.now().toString(), 
+      text: task,
+      completed: false 
+    }]);
+    setTask('');
+    Keyboard.dismiss();
+  };
 
-To create a new project, run the following command:
+  // Delete a task
+  const deleteTask = (id) => {
+    setTasks(tasks.filter(task => task.id !== id));
+  };
 
-<Terminal cmd={['$ npx create-expo-app@latest']} />
+  // Toggle task completion
+  const toggleComplete = (id) => {
+    setTasks(tasks.map(task => 
+      task.id === id ? { ...task, completed: !task.completed } : task
+    ));
+  };
 
-> You can choose a different template by adding the [`--template` option](/more/create-expo/#--template).
+  // Render each task item
+  const renderTask = ({ item }) => (
+    <View style={styles.taskItem}>
+      <TouchableOpacity 
+        style={styles.taskCheckbox}
+        onPress={() => toggleComplete(item.id)}
+      >
+        <Text style={styles.checkboxText}>
+          {item.completed ? '✓' : ''}
+        </Text>
+      </TouchableOpacity>
+      
+      <Text 
+        style={[
+          styles.taskText,
+          item.completed && styles.completedTask
+        ]}
+      >
+        {item.text}
+      </Text>
+      
+      <TouchableOpacity 
+        style={styles.deleteButton}
+        onPress={() => deleteTask(item.id)}
+      >
+        <Text style={styles.deleteText}>×</Text>
+      </TouchableOpacity>
+    </View>
+  );
 
-## Next step
+  return (
+    <View style={styles.container}>
+      <Text style={styles.title}>My Todo List 📝</Text>
+      
+      {/* Input Section */}
+      <View style={styles.inputContainer}>
+        <TextInput
+          style={styles.input}
+          placeholder="Add a new task..."
+          value={task}
+          onChangeText={setTask}
+          onSubmitEditing={addTask}
+        />
+        <TouchableOpacity style={styles.addButton} onPress={addTask}>
+          <Text style={styles.addButtonText}>+</Text>
+        </TouchableOpacity>
+      </View>
 
-You have a project. Now it's time to set up your development environment so that you can start developing.
+      {/* Tasks List */}
+      <FlatList
+        data={tasks}
+        renderItem={renderTask}
+        keyExtractor={item => item.id}
+        style={styles.taskList}
+        ListEmptyComponent={
+          <Text style={styles.emptyText}>No tasks yet! Add one above 👆</Text>
+        }
+      />
+
+      {/* Stats */}
+      <View style={styles.stats}>
+        <Text style={styles.statsText}>
+          Total: {tasks.length} | Completed: {tasks.filter(t => t.completed).length}
+        </Text>
+      </View>
+    </View>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#f8f9fa',
+    paddingTop: 60,
+    paddingHorizontal: 20,
+  },
+  title: {
+    fontSize: 32,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    marginBottom: 30,
+    color: '#2d3436',
+  },
+  inputContainer: {
+    flexDirection: 'row',
+    marginBottom: 20,
+  },
+  input: {
+    flex: 1,
+    backgroundColor: 'white',
+    padding: 15,
+    borderRadius: 10,
+    marginRight: 10,
+    fontSize: 16,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 3,
+    elevation: 3,
+  },
+  addButton: {
+    backgroundColor: '#00b894',
+    width: 50,
+    height: 50,
+    borderRadius: 10,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  addButtonText: {
+    color: 'white',
+    fontSize: 24,
+    fontWeight: 'bold',
+  },
+  taskList: {
+    flex: 1,
+  },
+  taskItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: 'white',
+    padding: 15,
+    borderRadius: 10,
+    marginBottom: 10,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.1,
+    shadowRadius: 2,
+    elevation: 2,
+  },
+  taskCheckbox: {
+    width: 24,
+    height: 24,
+    borderWidth: 2,
+    borderColor: '#00b894',
+    borderRadius: 12,
+    marginRight: 15,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  checkboxText: {
+    color: '#00b894',
+    fontWeight: 'bold',
+  },
+  taskText: {
+    flex: 1,
+    fontSize: 16,
+  },
+  completedTask: {
+    textDecorationLine: 'line-through',
+    color: '#999',
+  },
+  deleteButton: {
+    padding: 5,
+  },
+  deleteText: {
+    color: '#ff7675',
+    fontSize: 24,
+    fontWeight: 'bold',
+  },
+  emptyText: {
+    textAlign: 'center',
+    color: '#999',
+    fontSize: 16,
+    marginTop: 50,
+  },
+  stats: {
+    padding: 15,
+    backgroundColor: 'white',
+    borderRadius: 10,
+    marginTop: 10,
+  },
+  statsText: {
+    textAlign: 'center',
+    color: '#666',
+    fontSize: 14,
+  },
+});
